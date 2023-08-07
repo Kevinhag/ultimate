@@ -1,6 +1,8 @@
 local t = Def.ActorFrame{}
 local _volume = 1.0;
-
+local cmdPlay = function (self)
+	self:play();
+end;
 --=======================================================================================================================
 --SOUND CONTROLLER
 --=======================================================================================================================
@@ -23,7 +25,7 @@ t[#t+1] = Def.Actor{
 		self:queuecommand("PreviewStart");
 	end;
 
-	PreviewStartCommand=function(self) 
+	PreviewStartCommand=function(self)
 		local music = Global.song:GetMusicPath();
 		local start = 0;
 		local length = 0;
@@ -80,28 +82,28 @@ t[#t+1] = LoadActor(THEME:GetPathS("","Confirm"))..{
 };	
 
 t[#t+1] = LoadActor(THEME:GetPathS("","Group"))..{
-	FolderChangedMessageCommand=cmd(play);
+	FolderChangedMessageCommand=cmdPlay;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","Select"))..{
-	DecisionMessageCommand=cmd(play);
+	DecisionMessageCommand=cmdPlay;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","Switch"))..{
 	MusicWheelMessageCommand=function(self,param) if param and not param.silent then self:play() end; end;
-	SongGroupMessageCommand=cmd(play);
+	SongGroupMessageCommand=cmdPlay;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","State"))..{
-	MainMenuDecisionMessageCommand=cmd(play);
-	OptionsListOpenedMessageCommand=cmd(play);
+	MainMenuDecisionMessageCommand=cmdPlay;
+	OptionsListOpenedMessageCommand=cmdPlay;
 };	
 
 t[#t+1] = LoadActor(THEME:GetPathS("","Steps"))..{
-	StepsSelectedMessageCommand=cmd(play);
-	SongSelectedMessageCommand=cmd(play);
-	SpeedSelectedMessageCommand=cmd(play);
-	NoteskinSelectedMessageCommand=cmd(play);
+	StepsSelectedMessageCommand=cmdPlay;
+	SongSelectedMessageCommand=cmdPlay;
+	SpeedSelectedMessageCommand=cmdPlay;
+	NoteskinSelectedMessageCommand=cmdPlay;
 	OptionsListSelectedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 	OptionsMenuSelectedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 };	
@@ -118,7 +120,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","Mainmenu"))..{
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("Common","Cancel"))..{
-	OptionsListClosedMessageCommand=cmd(play);
+	OptionsListClosedMessageCommand=cmdPlay;
 	ReturnMessageCommand=function(self,param) 
 		self:play();
 	end;

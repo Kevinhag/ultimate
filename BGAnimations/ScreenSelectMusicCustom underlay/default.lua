@@ -5,20 +5,25 @@ local t = MenuInputActor()..{
 		SetSSM();
 	end;
 
-	OnCommand=cmd(sleep,1;queuecommand,"Unlock");
-    OffCommand=cmd(linear,0.5;diffusealpha,0;sleep,0.75;queuecommand,"Exit");
+	OnCommand=function (self)
+		self:sleep(1):queuecommand("Unlock");
+	end;
 
-	PlayerJoinedMessageCommand=function() 
+    OffCommand=function (self)
+		self:linear(0.5):diffusealpha(0):sleep(0.75):queuecommand("Exit");
+	end;
+
+	PlayerJoinedMessageCommand=function()
 		GAMESTATE:SetCurrentStyle("versus");
 		SCREENMAN:SetNewScreen("ScreenSelectMusicCustom");
 	end;
 
-	MenuInputMessageCommand=function(self,param) 
+	MenuInputMessageCommand=function(self,param)
 		if param and param.Player and SideJoined(param.Player) and not Global.lockinput then
 			InputController(self,param);
 			MainController(self,param);
 		end;
-	end;	
+	end;
 }
 
 --//================================================================	
