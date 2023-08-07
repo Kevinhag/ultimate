@@ -4,14 +4,22 @@ local function Update(self,dt)
     Global.mouseX = math.floor(INPUTFILTER:GetMouseX())*(Global.realW/DISPLAY:GetDisplayWidth());
     Global.mouseY = math.floor(INPUTFILTER:GetMouseY())*(Global.realH/DISPLAY:GetDisplayHeight());
     Global.debounce = Global.debounce - dt;
-    if Global.debounce < 0 then Global.debounce = 0 end;
+    
+    if Global.debounce < 0 then
+        Global.debounce = 0
+    end;
+
     Global.delta = dt;
     MESSAGEMAN:Broadcast("Update");
 end;
 
 local t = MouseInputActor()..{
-    InitCommand=function(self) self:SetUpdateFunction(Update); end;
-    MenuInputMessageCommand=function(self,param)  end;
+    InitCommand=function(self)
+        self:SetUpdateFunction(Update);
+    end;
+
+    MenuInputMessageCommand=function(self,param)
+    end;
 }
 
 --=======================================================================================================================

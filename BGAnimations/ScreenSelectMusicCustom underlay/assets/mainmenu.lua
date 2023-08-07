@@ -1,5 +1,7 @@
 local t = Def.ActorFrame{
-    OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.2;linear,0.15;diffusealpha,1);
+    OnCommand=function (self)
+        self:stoptweening():diffusealpha(0):sleep(0.2):linear(0.15):diffusealpha(1);
+    end;
 }
 
 local originY = SCREEN_TOP+52;
@@ -201,9 +203,15 @@ end;
 for i=1,#menutable do
     
     t[#t+1] = LoadActor(THEME:GetPathG("","menuslot"))..{
-        InitCommand=cmd(animate,false;zoom,0.388;setstate,0;y,originY;draworder,1;playcommand,"MainMenu");
-        StateChangedMessageCommand=cmd(playcommand,"MainMenu");
-        MainMenuMessageCommand=function(self)
+        InitCommand=function (self)
+            self:animate(false):zoom(0.388):setstate(0):y(originY):draworder(1):playcommand("MainMenu");
+        end;
+
+        StateChangedMessageCommand=function (self)
+            self:playcommand("MainMenu");
+        end;
+
+        MainMenuMessageCommand=function (self)
             self:stoptweening();
 
             local state = 1;
@@ -227,8 +235,13 @@ for i=1,#menutable do
     
     --highlight
     t[#t+1] = LoadActor(THEME:GetPathG("","menuslot"))..{
-            InitCommand=cmd(animate,false;zoom,0.388;setstate,0;y,originY;draworder,2;playcommand,"MainMenu");  
-            StateChangedMessageCommand=cmd(playcommand,"MainMenu");
+            InitCommand=function (self)
+                self:animate(false):zoom(0.388):setstate(0):y(originY):draworder(2):playcommand("MainMenu")
+            end;
+
+            StateChangedMessageCommand=function (self)
+                self:playcommand("MainMenu");
+            end;
             MainMenuMessageCommand=function(self)
 
                 self:stoptweening();
@@ -258,12 +271,18 @@ for i=1,#menutable do
     t[#t+1] = Def.BitmapText{
             Font = Fonts.mainmenu["Main"];
             Text = menutable[i].name;
-            InitCommand=cmd(zoom,0.42;y,originY-1;strokecolor,0.15,0.15,0.15,0.8;draworder,3;playcommand,"MainMenu");
-            StateChangedMessageCommand=cmd(playcommand,"MainMenu");
-            MainMenuMessageCommand=function(self) 
+            InitCommand=function (self)
+                self:zoom(0.42):y(originY-1):strokecolor(0.15,0.15,0.15,0.8):draworder(3):playcommand("MainMenu");
+            end;
 
-                self:stoptweening();        
-                self:stopeffect();  
+            StateChangedMessageCommand=function (self)
+                self:playcommand("MainMenu");
+            end;
+
+            MainMenuMessageCommand=function(self)
+
+                self:stoptweening();
+                self:stopeffect();
             
                 if i==1 then self:x(SCREEN_CENTER_X+(i*spacing)-(spacing*(math.ceil(#menutable/2)))+2);
                 elseif i==#menutable then self:x(SCREEN_CENTER_X+(i*spacing)-(spacing*(math.ceil(#menutable/2)))-3);
@@ -272,8 +291,8 @@ for i=1,#menutable do
             
                 --self:decelerate(0.2);
                 
-                if Global.level == 1 then 
-                    if Global.selection == i then 
+                if Global.level == 1 then
+                    if Global.selection == i then
                         if menutable[i].name == "Ready!" and Global.confirm[PLAYER_1]+Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined() then
                             self:diffuse(1,1,1,1)
                             self:diffuseshift();
@@ -321,20 +340,35 @@ for i=1,#menutable do
 end;
 
 
-
 t[#t+1] = LoadActor(THEME:GetPathG("","holes"))..{
-    InitCommand=cmd(zoom,0.475;x,SCREEN_CENTER_X-284;y,originY+6);
+    InitCommand=function (self)
+        self:zoom(0.475):x(SCREEN_CENTER_X-284):y(originY+6);
+    end;
 };
 t[#t+1] = LoadActor(THEME:GetPathG("","holes"))..{
-    InitCommand=cmd(zoom,0.475;x,SCREEN_CENTER_X+283;y,originY+6;zoomx,-0.475);
+    InitCommand=function (self)
+        self:zoom(0.475):x(SCREEN_CENTER_X+283):y(originY+6):zoomx(-0.475);
+    end;
 };
 
 -- DIM
 t[#t+1] = LoadActor(THEME:GetPathG("","glow"))..{
-    InitCommand=cmd(y,SCREEN_TOP+48;x,SCREEN_CENTER_X;diffuse,BoostColor(Global.bgcolor,0.45);zoomy,0.3;croptop,0.5;fadetop,0.1;zoomx,1.2;diffusealpha,0);
-    MainMenuMessageCommand=cmd(playcommand,"Refresh");
-    StateChangedMessageCommand=cmd(playcommand,"Refresh");
-    ToggleSelectMessageCommand=cmd(playcommand,"Refresh");
+    InitCommand=function (self)
+        self:y(SCREEN_TOP+48):x(SCREEN_CENTER_X):diffuse(BoostColor(Global.bgcolor,0.45)):zoomy(0.3):croptop(0.5):fadetop(0.1):zoomx(1.2):diffusealpha(0);
+    end;
+
+    MainMenuMessageCommand=function (self)
+        self:playcommand("Refresh");
+    end;
+
+    StateChangedMessageCommand=function (self)
+        self:playcommand("Refresh");
+    end;
+
+    ToggleSelectMessageCommand=function (self)
+        self:playcommand("Refresh");
+    end;
+
     RefreshCommand=function(self)
         self:stoptweening();
         self:decelerate(0.3);
@@ -347,12 +381,12 @@ t[#t+1] = LoadActor(THEME:GetPathG("","glow"))..{
     end;
 };
 
-
-
 -- group
 t[#t+1] = Def.BitmapText{
         Font = Fonts.mainmenu["Info"];
-        InitCommand=cmd(horizalign,left;x,SCREEN_CENTER_X-266;y,SCREEN_TOP+72;zoom,0.322;diffuse,0.75,0.75,0.75,1;strokecolor,0.175,0.175,0.175,0.95);
+        InitCommand=function (self)
+            self:horizalign(left):x(SCREEN_CENTER_X-266):y(SCREEN_TOP+72):zoom(0.322):diffuse(0.75,0.75,0.75,1):strokecolor(0.175,0.175,0.175,0.95);
+        end;
         StateChangedMessageCommand=function(self)
             local g = string.gsub(Global.songgroup, "~", "-");
             local attr = { Length = -1; Diffuse = color("#FFFFFFAA"); };
@@ -377,9 +411,18 @@ t[#t+1] = Def.BitmapText{
 -- song index
 t[#t+1] = Def.BitmapText{
         Font = Fonts.mainmenu["Info"];
-        InitCommand=cmd(horizalign,right;x,SCREEN_CENTER_X+266;y,SCREEN_TOP+72;zoom,0.322;diffuse,0.75,0.75,0.75,1;strokecolor,0.175,0.175,0.175,1;diffusealpha,2/3);
-        BuildMusicListMessageCommand=cmd(playcommand,"Refresh");
-        MusicWheelMessageCommand=cmd(playcommand,"Refresh");
+        InitCommand=function (self)
+            self:horizalign(right):x(SCREEN_CENTER_X+266):y(SCREEN_TOP+72):zoom(0.322):diffuse(0.75,0.75,0.75,1):strokecolor(0.175,0.175,0.175,1):diffusealpha(2/3);
+        end;
+
+        BuildMusicListMessageCommand=function (self)
+            self:playcommand("Refresh");
+        end;
+
+        MusicWheelMessageCommand=function (self)
+            self:playcommand("Refresh");
+        end;
+
         RefreshCommand=function(self)
             local b = #Global.songlist;
             local a = string.format("%0"..string.len(b).."d",Global.selection);
@@ -406,9 +449,16 @@ t[#t+1] = Def.BitmapText{
 -- READY
 t[#t+1] = Def.BitmapText{
     Font = Fonts.mainmenu["Main"];
-    InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+78;zoom,0.425;textglowmode,"TextGlowMode_Inner";strokecolor,0.3,0.3,0.3,1;diffusealpha,0;bob;effectmagnitude,0,2,0;effectperiod,1.75);
-    OnCommand=cmd(settext,"All players ready! Press &START; button to play!";playcommand,"MainMenu");
-    CodeMessageCommand=cmd(playcommand,"MainMenu");
+    InitCommand=function (self)
+        self:x(SCREEN_CENTER_X):y(SCREEN_TOP+78):zoom(0.425):textglowmode("TextGlowMode_Inner"):strokecolor(0.3,0.3,0.3,1):diffusealpha(0):bob():effectmagnitude(0,2,0):effectperiod(1.75);
+    end;
+    OnCommand=function (self)
+        self:settext("All players ready! Press &START; button to play!"):playcommand("MainMenu");
+    end;
+    CodeMessageCommand=function (self)
+        self:playcommand("MainMenu");
+    end;
+
     MainMenuMessageCommand=function(self)
     
     self:stoptweening();

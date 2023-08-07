@@ -188,31 +188,45 @@ end
 
 --//================================================================
 
-function TextBannerAfterSet(self,param) 
-	local Title=self:GetChild("Title"); 
-	local Subtitle=self:GetChild("Subtitle"); 
-	local Artist=self:GetChild("Artist"); 
+function TextBannerAfterSet(self,param)
+	local Title=self:GetChild("Title");
+	local Subtitle=self:GetChild("Subtitle");
+	local Artist=self:GetChild("Artist");
 	
-	if Subtitle:GetText() == "" then 
-		(cmd(maxwidth,660;zoom,0.425;shadowlength,1;settext,Title:GetText()))(Title);
+	if Subtitle:GetText() == "" then
+		(function (self)
+			self:maxwidth(660):zoom(0.425):shadowlength(1):settext(Title:GetText());
+		end)(Title);
 		else
-		(cmd(maxwidth,660;zoom,0.425;shadowlength,1;settext,Title:GetText().." "..Subtitle:GetText()))(Title);
+		(function (self)
+			self:maxwidth(660):zoom(0.425):shadowlength(1):settext(Title:GetText().." "..Subtitle:GetText())
+		end)(Title);
 	end
-	(cmd(visible,false))(Subtitle);
-	(cmd(visible,false))(Artist);
+
+	-- if Subtitle:GetText() == "" then
+	-- 	(cmd(maxwidth,660;zoom,0.425;shadowlength,1;settext,Title:GetText()))(Title);
+	-- 	else
+	-- 	(cmd(maxwidth,660;zoom,0.425;shadowlength,1;settext,Title:GetText().." "..Subtitle:GetText()))(Title);
+	-- end
+	(function (self)
+		self:visible(false);
+	end)(Subtitle);
+	(function (self)
+		self:visible(false);
+	end)(Artist);
 end
 
 --//================================================================
 
 function EditMenuTransform(self,offsetFromCenter,itemIndex,numItems) 
-	local indexOffset = itemIndex-(numItems-1)/2; 
+	local indexOffset = itemIndex-(numItems-1)/2;
 	self:zoom(0.7);
 	self:x(numItems-itemIndex);
-	self:y( SCREEN_CENTER_Y + indexOffset * 17 ); 
+	self:y( SCREEN_CENTER_Y + indexOffset * 17 );
 end
 
 function EditHelpTransform(self,offsetFromCenter,itemIndex,numItems) 
-	local indexOffset = itemIndex-(numItems-1)/2; 
-	self:y( SCREEN_CENTER_Y + indexOffset * 17 ); 
+	local indexOffset = itemIndex-(numItems-1)/2;
+	self:y( SCREEN_CENTER_Y + indexOffset * 17 );
 end
 

@@ -45,8 +45,14 @@ end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do 
 		
 	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(x,SCREEN_CENTER_X + spacing * pnSide(pn);y,originY);
-		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;visible,SideJoined(pn));
+		InitCommand=function (self)
+			self:x(SCREEN_CENTER_X + spacing * pnSide(pn)):y(originY);
+		end;
+
+		OnCommand=function (self)
+			self:stoptweening():diffusealpha(0):sleep(0.5):linear(0.5):diffusealpha(1):visible(SideJoined(pn));
+		end;
+
 		StateChangedMessageCommand=function(self)
 			self:stoptweening();
 			self:decelerate(0.2);
@@ -58,19 +64,32 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		end;
 
 		LoadActor(THEME:GetPathG("","dim"))..{
-			InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 * -pnSide(pn));
+			InitCommand=function (self)
+				self:zoomto(364,96):diffuse(BoostColor(Global.bgcolor,0.75)):fadeleft(0.66666):faderight(0.66666):x(64 * -pnSide(pn));
+			end;
 		};
 		
 		LoadActor(THEME:GetPathG("","separator"))..{
-			InitCommand=cmd(zoom,0.45;x,25 * -pnSide(pn);y,-2;diffuse,0,0,0,0.5);
+			InitCommand=function (self)
+				self:zoom(0.45):x(25 * -pnSide(pn)):y(-2):diffuse(0,0,0,0.5);
+			end;
 		};
 
 		-- meter
 		Def.BitmapText{
 				Font = Fonts.cursteps["Meter"];
-				InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,1);
-				OnCommand=cmd(playcommand,"Refresh");
-				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				InitCommand=function (self)
+					self:zoom(0.5):strokecolor(0.15,0.15,0.15,1);
+				end;
+
+				OnCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
+				StepsChangedMessageCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
 				RefreshCommand=function(self)
 					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn] 
@@ -87,9 +106,18 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- stepstype
 		Def.BitmapText{
 				Font = Fonts.cursteps["Type"];
-				InitCommand=cmd(vertalign,bottom;zoom,0.3;strokecolor,0.2,0.2,0.2,0.5;y,-10;x,-1);
-				OnCommand=cmd(playcommand,"Refresh");
-				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				InitCommand=function (self)
+					self:vertalign(bottom):zoom(0.3):strokecolor(0.2,0.2,0.2,0.5):y(-10):x(-1);
+				end;
+
+				OnCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
+				StepsChangedMessageCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
 				RefreshCommand=function(self)
 					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]
@@ -111,9 +139,18 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- maker
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,164/self:GetZoom());
-				OnCommand=cmd(playcommand,"Refresh");
-				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				InitCommand=function (self)
+					self:horizalign(pnAlign(pn)):x(36 * -pnSide(pn)):y(-11):zoom(0.4):strokecolor(0.2,0.2,0.2,1):maxwidth(164/self:GetZoom());
+				end;
+
+				OnCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
+				StepsChangedMessageCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
 				RefreshCommand=function(self)
 					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]
@@ -134,9 +171,17 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- notes
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,164/self:GetZoom());
-				OnCommand=cmd(playcommand,"Refresh");
-				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				InitCommand=function (self)
+					self:horizalign(pnAlign(pn)):x(36 * -pnSide(pn)):y(3):zoom(0.4):diffuse(BoostColor(PlayerColor(pn),0.95)):strokecolor(BoostColor(PlayerColor(pn),0.3)):maxwidth(164/self:GetZoom());
+				end;
+				OnCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
+				StepsChangedMessageCommand=function (self)
+					self:playcommand("Refresh");
+				end;
+
 				RefreshCommand=function(self)
 					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]

@@ -14,7 +14,10 @@ local translit_subtitle;
 local translit_artist;
 
 local t = Def.ActorFrame{
-	OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.2;diffusealpha,1;playcommand,"MusicWheel");
+	OnCommand=function (self)
+		self:stoptweening():diffusealpha(0):sleep(0.5):linear(0.2):diffusealpha(1):playcommand("MusicWheel");
+	end;
+
 	MusicWheelMessageCommand=function(self)
 
 		--time
@@ -74,12 +77,16 @@ local titlemaxwidth = 460;
 
 --// LENGTH =================
 t[#t+1] = Def.ActorFrame{
-	InitCommand=cmd(x,originX-spacing-4;y,originY+1);
+	InitCommand=function (self)
+		self:x(originX-spacing-4):y(originY+1);
+	end;
 
 	Def.BitmapText{
 		Font = Fonts.information["Main"];
-		InitCommand=cmd(horizalign,left;x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);
-			strokecolor,BoostColor(HighlightColor(),0.25);shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1.75;shadowlengthy,1.75);
+		InitCommand=function (self)
+			self:horizalign(left):x(-1):y(-1):vertalign(top):zoom(artistzoom):diffuse(BoostColor(HighlightColor(),0.25)):strokecolor(BoostColor(HighlightColor(),0.25)):shadowcolor(BoostColor(HighlightColor(),0.25)):shadowlengthx(1.75):shadowlengthy(1.75);
+		end;
+
 		SongInformationMessageCommand=function(self)
 			self:settext(time);
 		end;

@@ -1,9 +1,12 @@
 local t = Def.ActorFrame{
-	InitCommand=cmd(diffusealpha,0);
+	InitCommand=function (self)
+		self:diffusealpha(0)
+	end;
+
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
-		if Global.state == "GroupSelect" then 
+		if Global.state == "GroupSelect" then
 			self:diffusealpha(1);
 		else
 			self:diffusealpha(0);
@@ -135,8 +138,14 @@ end
 --//================================================================
 
 t[#t+1] = Def.Sprite{
-	InitCommand=cmd(diffusealpha,0.75;fadebottom,1);
-	OnCommand=cmd(playcommand,"ReloadGroups");
+	InitCommand=function (self)
+		self:diffusealpha(0.75):fadebottom(1);
+	end;
+
+	OnCommand=function (self)
+		self:playcommand("ReloadGroups");
+	end;
+
 	ReloadGroupsMessageCommand=function(self,param)
 
 		local index = Global.selection;
@@ -162,8 +171,13 @@ t[#t+1] = Def.Sprite{
 for i=1,maxitems do 
 
 	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(x,originX;y,SCREEN_BOTTOM-140;diffusealpha,0);
-		OnCommand=cmd(playcommand,"SongGroup");
+		InitCommand=function (self)
+			self:x(originX):y(SCREEN_BOTTOM-140):diffusealpha(0);
+		end;
+
+		OnCommand=function (self)
+			self:playcommand("SongGroup");
+		end;
 		SongGroupMessageCommand=function(self,param)
 
 			self:stoptweening();
@@ -195,43 +209,61 @@ for i=1,maxitems do
 
 		-- SHADOW
 		LoadActor(THEME:GetPathG("","glow"))..{
-			InitCommand=cmd(zoomto,96,32;diffuse,0.1,0.1,0.1,0.33;y,20);
+			InitCommand=function (self)
+				self:zoomto(96,32):diffuse(0.1,0.1,0.1,0.33):y(20);
+			end;
 		};
 			
 		-- FOLDER IMAGE
 		LoadActor(THEME:GetPathG("","folder"))..{
-			InitCommand=cmd(zoom,2/3;y,-8;diffuse,0.66,0.66,0.66,1;diffusebottomedge,0.75,0.75,0.75,2/3);
-			OnCommand=cmd(playcommand,"ReloadGroups");
+			InitCommand=function (self)
+				self:zoom(2/3):y(-8):diffuse(0.66,0.66,0.66,1):diffusebottomedge(0.75,0.75,0.75,2/3);
+			end;
+
+			OnCommand=function (self)
+				self:playcommand("ReloadGroups")
+			end;
 		};
 
 		-- FOLDER NAME
 		Def.BitmapText{
 			Font = Fonts.groupselect["Name"];
-			InitCommand=cmd(zoom,0.42;diffusealpha,1;strokecolor,0.175,0.175,0.175,0.85;y,8;
-				maxheight,128;maxwidth,(itemspacing-24)/self:GetZoom();wrapwidthpixels,(itemspacing-24)/self:GetZoom();vertspacing,-4;vertalign,bottom);
-			OnCommand=cmd(playcommand,"ReloadGroups");
+			InitCommand=function (self)
+				self:zoom(0.42):diffusealpha(1):strokecolor(0.175,0.175,0.175,0.85):y(8):maxheight(128):maxwidth((itemspacing-24)/self:GetZoom()):wrapwidthpixels((itemspacing-24)/self:GetZoom()):vertspacing(-4):vertalign(bottom);
+			end;
+
+			OnCommand=function (self)
+				self:playcommand("ReloadGroups");
+			end;
+
 			ReloadGroupsMessageCommand=function(self)
 				local index = ItemIndex(Global.selection, i, #Global.allgroups);
-				self:settext(Global.allgroups[index]["Name"]); 
+				-- self:settext(Global.allgroups[index]["Name"]); 
 			end;
 		};
 		
 		-- NUMSONGS
 		Def.BitmapText{
 			Font = Fonts.groupselect["Songs"];
-			InitCommand=cmd(zoom,0.38;diffuse,HighlightColor();diffusealpha,1;strokecolor,BoostColor(HighlightColor(),0.25);y,16);
-			OnCommand=cmd(playcommand,"ReloadGroups");
-			ReloadGroupsMessageCommand=function(self,param)
-				local index = ItemIndex(Global.selection, i, #Global.allgroups);
-				local numsongs = Global.allgroups[index]["Count"];
-				if numsongs == 1 then 
-					self:settext(numsongs.." song"); 
-				else 
-					self:settext(numsongs.." songs"); 
-				end;
-
-
+			InitCommand=function (self)
+				self:zoom(0.38):diffuse(HighlightColor()):diffusealpha(1):strokecolor(BoostColor(HighlightColor(),0.25)):y(16);
 			end;
+
+			OnCommand=function (self)
+				self:playcommand("ReloadGroups");
+			end;
+
+			-- ReloadGroupsMessageCommand=function(self,param)
+			-- 	local index = ItemIndex(Global.selection, i, #Global.allgroups);
+			-- 	local numsongs = Global.allgroups[index]["Count"];
+			-- 	if numsongs == 1 then
+			-- 		self:settext(numsongs.." song");
+			-- 	else
+			-- 		self:settext(numsongs.." songs");
+			-- 	end;
+
+
+			-- end;
 		};
 	};
 
@@ -240,10 +272,13 @@ end;
 --//================================================================
 
 	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(x,originX;y,SCREEN_BOTTOM-72);
+		InitCommand=function (self)
+			self:x(originX):y(SCREEN_BOTTOM-72);
+		end;
+
 		StateChangedMessageCommand=function(self)
 			self:stoptweening();
-			if Global.state == "GroupSelect" then 
+			if Global.state == "GroupSelect" then
 				self:diffusealpha(1);
 			else
 				self:diffusealpha(0);
@@ -252,12 +287,20 @@ end;
 
 
 			LoadActor(THEME:GetPathG("ScrollBar","middle"))..{
-				InitCommand=cmd(y,5;rotationz,90;zoomto,6,80;diffusealpha,0.6;queuecommand,"StateChanged");
+				InitCommand=function (self)
+					self:y(5):rotationz(90):zoomto(6,80):diffusealpha(0.6):queuecommand("StateChanged");
+				end;
 			};
 			
 			LoadActor(THEME:GetPathG("ScrollBar","TickThumb"))..{
-				InitCommand=cmd(y,5;diffusealpha,1;zoom,0.5);
-				OnCommand=cmd(playcommand,"StateChanged");
+				InitCommand=function (self)
+					self:y(5):diffusealpha(1):zoom(0.5)
+				end;
+
+				OnCommand=function (self)
+					self:playcommand("StateChanged")
+				end;
+
 				SongGroupMessageCommand=function(self)
 					self:stoptweening();
 					if Global.state == "GroupSelect" then 
@@ -278,18 +321,28 @@ end;
 			Def.ActorFrame{
 			Name = "Normal";
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
-					InitCommand=cmd(animate,false;x,-cursorspacing;zoom,cursorzoom;diffuse,0.6,0.6,0.6,0.95;shadowlengthy,1);
-				},	
+					InitCommand=function (self)
+						self:animate(false):x(-cursorspacing):zoom(cursorzoom):diffuse(0.6,0.6,0.6,0.95):shadowlengthy(1);
+					end;
+				},
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
-					InitCommand=cmd(animate,false;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffuse,0.6,0.6,0.6,0.95;shadowlengthy,1);
+					InitCommand=function (self)
+						self:animate(false):x(cursorspacing):zoom(cursorzoom):zoomx(-cursorzoom):diffuse(0.6,0.6,0.6,0.95):shadowlengthy(1);
+					end;
 				},
 			},
 
 			Def.ActorFrame{
 			Name = "Glow";
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
-					InitCommand=cmd(animate,false;setstate,1;x,-cursorspacing;zoom,cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
-					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
+					InitCommand=function (self)
+						self:animate(false):setstate(1):x(-cursorspacing):zoom(cursorzoom):diffusealpha(0):blend("BlendMode_Add");
+					end;
+
+					GlowCommand=function (self)
+						self:stoptweening():diffusealpha(1):decelerate(0.3):diffusealpha(0);
+					end;
+
 					SongGroupMessageCommand=function(self,param)
 						if param and param.direction == "Prev" then
 							self:playcommand("Glow");
@@ -297,8 +350,14 @@ end;
 					end;
 				},	
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
-					InitCommand=cmd(animate,false;setstate,1;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
-					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
+					InitCommand=function (self)
+						self:animate(false):setstate(1):x(cursorspacing):zoom(cursorzoom):zoomx(-cursorzoom):diffusealpha(0):blend("BlendMode_Add");
+					end;
+
+					GlowCommand=function (self)
+						self:stoptweening():diffusealpha(1):decelerate(0.3):diffusealpha(0);
+					end;
+
 					SongGroupMessageCommand=function(self,param)
 						if param and param.direction == "Next" then
 							self:playcommand("Glow");
@@ -309,8 +368,14 @@ end;
 
 			Def.BitmapText{
 				Font = Fonts.groupselect["Folders"];
-				InitCommand=cmd(y,-8;zoomx,0.3;zoomy,0.3;strokecolor,0.175,0.175,0.175,0.75);
-				StateChangedMessageCommand=cmd(playcommand,"SongGroup");
+				InitCommand=function (self)
+					self:y(-8):zoomx(0.3):zoomy(0.3):strokecolor(0.175,0.175,0.175,0.75);
+				end;
+
+				StateChangedMessageCommand=function (self)
+					self:playcommand("SongGroup");
+				end;
+
 				SongGroupMessageCommand=function(self)
 					local a = string.format("%0"..string.len(#Global.allgroups).."d",Global.selection);
 					local b = #Global.allgroups;
@@ -327,7 +392,10 @@ end;
 
 -- QUADS BG
 local bg = Def.ActorFrame{
-    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+    InitCommand=function (self)
+		self:CenterX():y(SCREEN_CENTER_Y-10.5):diffusealpha(0);
+	end;
+
     StateChangedMessageCommand=function(self)
         self:stoptweening();
         self:decelerate(0.2);
@@ -336,9 +404,9 @@ local bg = Def.ActorFrame{
 
 
     LoadActor(THEME:GetPathG("","_pattern"))..{
-        InitCommand=cmd(zoomto,_screen.w,_screen.h;blend,Blend.Add;
-            diffuse,BoostColor(HighlightColor(0.5),0.125);diffusebottomedge,0.1,0.1,0.1,0;cropbottom,1/3;
-                customtexturerect,0,0,_screen.w / 384 * 2,_screen.h / 384 * 2;texcoordvelocity,0,-0.075);
+        InitCommand=function (self)
+			self:zoomto(_screen.w,_screen.h):blend(Blend.Add):diffuse(BoostColor(HighlightColor(0.5),0.125)):diffusebottomedge(0.1,0.1,0.1,0):cropbottom(1/3):customtexturerect(0,0,_screen.w / 384 * 2,_screen.h / 384 * 2):texcoordvelocity(0,-0.075);
+		end;
     },
 };
 

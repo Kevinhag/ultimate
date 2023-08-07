@@ -1,22 +1,39 @@
 function DefaultOptionScrollerActor(fontsize,sidespacing)
+
+    local GainFocusAnim = function (self)
+        self:stoptweening():decelerate(0.15):diffuse(HighlightColor()):strokecolor(BoostColor(HighlightColor(),0.2))
+    end;
+
+    local LoseFocusAnim = function (self)
+        self:stoptweening():decelerate(0.15):diffuse(1,1,1,1):strokecolor(0.2,0.2,0.2,0.8);
+    end;
+
+    local DisabledAnim = function (self)
+        self:stoptweening():decelerate(0.15):diffuse(0.6,0.6,0.6,0.5):strokecolor(0.2,0.2,0.2,0.8);
+    end;
+
     return Def.ActorFrame{
         -- name
         Def.BitmapText{
             Name = "Name";
             Font = Fonts.options["Main"];
-            InitCommand=cmd(horizalign,left;x,-sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
-            GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
-            LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
-            DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+            InitCommand = function (self)
+                self:horizalign(left):x(-sidespacing):zoom(fontsize):strokecolor(0.2,0.2,0.2,1);
+            end;
+            GainFocusCommand = GainFocusAnim;
+            LoseFocusCommand = LoseFocusAnim;
+            DisabledCommand = DisabledAnim;
         },
         -- value
         Def.BitmapText{
             Name = "Value";
             Font = Fonts.options["Main"];
-            InitCommand=cmd(horizalign,right;x,sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
-            GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
-            LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
-            DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+            InitCommand=function (self)
+                self:horizalign(right):x(sidespacing):zoom(fontsize):strokecolor(0.2,0.2,0.2,1);
+            end;
+            GainFocusCommand = GainFocusAnim;
+            LoseFocusCommand = LoseFocusAnim;
+            DisabledCommand = DisabledAnim;
         },  
     }
 end;

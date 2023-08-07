@@ -25,7 +25,7 @@ end;
 --//================================================================
 
 function LoadBackground(self,song)
-    local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
+    -- local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
 
     local rmov = FindRandomMovie(song)
     local bga = song:GetSongDir()..FindBGA(FILEMAN:GetDirListing(song:GetSongDir()));

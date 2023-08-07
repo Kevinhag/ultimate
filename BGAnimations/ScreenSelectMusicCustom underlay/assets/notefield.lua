@@ -121,12 +121,29 @@ t[#t+1] = tex;
 
 t[#t+1] = Def.Sprite{
     Texture = "notefield_overlay";
-    InitCommand=cmd(zoom,0.515;xy,_screen.cx,_screen.cy-177;vertalign,top;diffusealpha,0);
-    OnCommand=cmd(playcommand,"Reload");
-    MusicWheelMessageCommand=cmd(playcommand,"Reload");
-    StepsChangedMessageCommand=cmd(stoptweening;diffusealpha,0;linear,0.15;diffusealpha,1);
-    ReloadCommand=cmd(stoptweening;diffusealpha,0;sleep,0.6;linear,0.25;diffusealpha,1);
-    StateChangedMessageCommand=cmd(finishtweening;linear,0.15;fadebottom,Global.state == "GroupSelect" and 0.2 or 0);
+    InitCommand=function (self)
+        self:zoom(0.515):xy(_screen.cx,_screen.cy-177):vertalign(top):diffusealpha(0);
+    end;
+
+    OnCommand=function (self)
+        self:playcommand("Reload");
+    end;
+
+    MusicWheelMessageCommand=function (self)
+        self:playcommand("Reload");
+    end;
+
+    StepsChangedMessageCommand=function (self)
+        self:stoptweening():diffusealpha(0):linear(0.15):diffusealpha(1);
+    end;
+
+    ReloadCommand=function (self)
+        self:stoptweening():diffusealpha(0):sleep(0.6):linear(0.25):diffusealpha(1);
+    end;
+
+    StateChangedMessageCommand=function (self)
+        self:finishtweening():linear(0.15):fadebottom(Global.state == "GroupSelect" and 0.2 or 0);
+    end;
 }
 
 

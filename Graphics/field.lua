@@ -7,8 +7,14 @@ for i=1,snow do
 local size = math.random(2,4);
 
 t[#t+1] = Def.Quad{
-	InitCommand=cmd(zoomto,size,size);
-	OnCommand=cmd(x,math.random(-40,SCREEN_WIDTH);y,-40;sleep,i/10;queuecommand,"Fall");
+	InitCommand=function (self)
+		self:zoomto(size,size);
+	end;
+
+	OnCommand=function (self)
+		self:x(math.random(-40,SCREEN_WIDTH)):y(-40):sleep(i/10):queuecommand("Fall");
+	end;
+
 	FallCommand=function(self)
 		self:stoptweening();
 		
@@ -30,7 +36,9 @@ t[#t+1] = Def.Quad{
 end;
 
 t[#t+1] = Def.Actor{
-	OnCommand=cmd(sleep,GAMESTATE:GetCurrentSong():GetStepsSeconds()+5);
+	OnCommand=function (self)
+		self:sleep(GAMESTATE:GetCurrentSong():GetStepsSeconds()+5);
+	end;
 };
 
 return t;

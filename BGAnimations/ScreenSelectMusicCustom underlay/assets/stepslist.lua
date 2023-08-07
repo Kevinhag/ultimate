@@ -8,8 +8,16 @@ local voffset = 0;
 local paneLabels = {"Taps","Jumps","Holds","Hands","Mines","Other"};
 
 local t = Def.ActorFrame{
-    OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.2;diffusealpha,1);
-    MusicWheelMessageCommand=function(self,param) if param and param.Direction then voffset = 0; end; end;
+    OnCommand=function (self)
+        self:stoptweening():diffusealpha(0):sleep(0.5):linear(0.2):diffusealpha(1);
+    end;
+
+    MusicWheelMessageCommand=function(self,param)
+        if param and param.Direction then
+            voffset = 0;
+        end;
+    end;
+
     StateChangedMessageCommand=function(self)
         self:stoptweening();
         self:decelerate(0.2);
@@ -42,27 +50,29 @@ local t = Def.ActorFrame{
 function StepsController(self,param)
     if param.Player then
         if param.Input == "Prev" and param.Button == "Left" then
-            Global.confirm[param.Player] = 0; 
-            MESSAGEMAN:Broadcast("Deselect"); 
+            Global.confirm[param.Player] = 0;
+            MESSAGEMAN:Broadcast("Deselect");
 
             if #Global.steps > 1 then
-                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]-1; 
+                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]-1;
                 if Global.pnsteps[param.Player] < 1 then Global.pnsteps[param.Player] = #Global.steps; end;
-                Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]]; 
-                MESSAGEMAN:Broadcast("StepsChanged", { Prev = true , Player = param.Player }); 
+                Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]];
+                MESSAGEMAN:Broadcast("StepsChanged", { Prev = true , Player = param.Player });
             end
 
         end;
 
         if param.Input == "Next" and param.Button == "Right" then
             Global.confirm[param.Player] = 0;
-            MESSAGEMAN:Broadcast("Deselect"); 
+            MESSAGEMAN:Broadcast("Deselect");
 
             if #Global.steps > 1 then
-                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]+1; 
-                if Global.pnsteps[param.Player] > #Global.steps then Global.pnsteps[param.Player] = 1; end;
+                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]+1;
+                if Global.pnsteps[param.Player] > #Global.steps then
+                    Global.pnsteps[param.Player] = 1;
+                end;
                 Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]];
-                MESSAGEMAN:Broadcast("StepsChanged", { Next = true , Player = param.Player }); 
+                MESSAGEMAN:Broadcast("StepsChanged", { Next = true , Player = param.Player });
             end;
             
         end;
@@ -95,8 +105,8 @@ end;
 
 function SelectStep(param)
 
-    if param then Global.confirm[param.Player] = 1; 
-        MESSAGEMAN:Broadcast("StepsSelected"); 
+    if param then Global.confirm[param.Player] = 1;
+        MESSAGEMAN:Broadcast("StepsSelected");
         if Global.confirm[PLAYER_1] + Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined() then
             Global.level = 1;
             Global.state = "MainMenu";
@@ -112,22 +122,58 @@ end;
 --//================================================================
 
 t[#t+1] = LoadActor(THEME:GetPathG("","dim"))..{
-    InitCommand=cmd(diffuse,0.33,0.33,0.33,0.33;y,originY;x,originX;zoomto,640,220;fadeleft,0.33;faderight,0.33;croptop,0.5);
+    InitCommand=function (self)
+        self:diffuse(0.33,0.33,0.33,0.33):y(originY):x(originX):zoomto(640,220):fadeleft(0.33):faderight(0.33):croptop(0.5);
+    end;
 };
 
 t[#t+1] = LoadActor(THEME:GetPathG("","stepspane"))..{
-    InitCommand=cmd(animate,false;setstate,1+3;y,originY;x,originX;zoomto,(spacing*numcharts),0.425*self:GetHeight();diffusebottomedge,1,1,1,1);
-    StateChangedMessageCommand=function(self) self:stoptweening(); self:linear(0.2); if Global.state ~= "SelectSteps" then self:diffusebottomedge(1,1,1,1); else self:diffusebottomedge(0.5,0.5,0.5,1); end; end;
-};
-t[#t+1] = LoadActor(THEME:GetPathG("","stepspane"))..{
-    InitCommand=cmd(animate,false;setstate,0+3;horizalign,right;y,originY;x,originX-((spacing*numcharts)/2);zoom,0.425;diffusebottomedge,1,1,1,1);
-    StateChangedMessageCommand=function(self) self:stoptweening(); self:linear(0.2); if Global.state ~= "SelectSteps" then self:diffusebottomedge(1,1,1,1);  else self:diffusebottomedge(0.5,0.5,0.5,1); end; end;
-};
-t[#t+1] = LoadActor(THEME:GetPathG("","stepspane"))..{
-    InitCommand=cmd(animate,false;setstate,2+3;horizalign,left;y,originY;x,originX+((spacing*numcharts)/2);zoom,0.425;diffusebottomedge,1,1,1,1);
-    StateChangedMessageCommand=function(self) self:stoptweening(); self:linear(0.2); if Global.state ~= "SelectSteps" then self:diffusebottomedge(1,1,1,1);  else self:diffusebottomedge(0.5,0.5,0.5,1); end; end;
+    InitCommand=function (self)
+        self:animate(false):setstate(1+3):y(originY):x(originX):zoomto((spacing*numcharts),0.425*self:GetHeight()):diffusebottomedge(1,1,1,1);
+    end;
+
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:linear(0.2);
+        if Global.state ~= "SelectSteps" then
+            self:diffusebottomedge(1,1,1,1);
+        else
+            self:diffusebottomedge(0.5,0.5,0.5,1);
+        end;
+    end;
 };
 
+t[#t+1] = LoadActor(THEME:GetPathG("","stepspane"))..{
+    InitCommand=function (self)
+        self:animate(false):setstate(0+3):horizalign(right):y(originY):x(originX-((spacing*numcharts)/2)):zoom(0.425):diffusebottomedge(1,1,1,1);
+    end;
+
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:linear(0.2);
+        if Global.state ~= "SelectSteps" then
+            self:diffusebottomedge(1,1,1,1);
+        else
+            self:diffusebottomedge(0.5,0.5,0.5,1);
+        end;
+    end;
+};
+
+t[#t+1] = LoadActor(THEME:GetPathG("","stepspane"))..{
+    InitCommand=function (self)
+        self:animate(false):setstate(2+3):horizalign(left):y(originY):x(originX+((spacing*numcharts)/2)):zoom(0.425):diffusebottomedge(1,1,1,1);
+    end;
+
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:linear(0.2);
+        if Global.state ~= "SelectSteps" then
+            self:diffusebottomedge(1,1,1,1);
+        else
+            self:diffusebottomedge(0.5,0.5,0.5,1);
+        end;
+    end;
+};
 
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
@@ -146,14 +192,25 @@ for num=0,radaritems do
 
     --// radar item
     t[#t+1] = Def.ActorFrame{
-            InitCommand=cmd(y,SCREEN_CENTER_Y+112;x,SCREEN_CENTER_X+(panespacing*pnSide(pn));draworder,num);
-            OnCommand=cmd(visible,SideJoined(pn));
+            InitCommand=function (self)
+                self:y(SCREEN_CENTER_Y+112):x(SCREEN_CENTER_X+(panespacing*pnSide(pn))):draworder(num);
+            end;
+
+            OnCommand=function (self)
+                self:visible(SideJoined(pn));
+            end;
 
             --// ICONS ==================
             Def.Sprite{
                 Texture = THEME:GetPathG("","radar");
-                InitCommand=cmd(zoom,0.375;animate,false;halign,0.5;valign,0.5;diffuse,PlayerColor(pn);y,12;diffusebottomedge,0.2,0.2,0.2,0.5;diffusealpha,0;);
-                OnCommand=cmd(setstate,self:GetNumStates() > num and num or 0;playcommand,"StateChanged");
+                InitCommand=function (self)
+                    self:zoom(0.375):animate(false):halign(0.5):valign(0.5):diffuse(PlayerColor(pn)):y(12):diffusebottomedge(0.2,0.2,0.2,0.5):diffusealpha(0);
+                end;
+
+                OnCommand=function (self)
+                    self:setstate(self:GetNumStates() > num and num or 0):playcommand("StateChanged");
+                end;
+
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
                     self:decelerate(0.15);
@@ -176,8 +233,14 @@ for num=0,radaritems do
             --// LABELS ==================
             Def.BitmapText{
                 Font = Fonts.radar["Label"];
-                InitCommand=cmd(zoomx,0.31;zoomy,0.3;halign,0.5;valign,0.5;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.3);vertspacing,-30.9;diffusealpha,0);
-                OnCommand=cmd(playcommand,"StateChanged");
+                InitCommand=function (self)
+                    self:zoomx(0.31):zoomy(0.3):halign(0.5):valign(0.5):diffuse(PlayerColor(pn)):strokecolor(BoostColor(PlayerColor(pn),0.3)):vertspacing(-30.9):diffusealpha(0);
+                end;
+
+                OnCommand=function (self)
+                    self:playcommand("StateChanged");
+                end;
+
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
                     self:decelerate(0.15);
@@ -204,8 +267,14 @@ for num=0,radaritems do
             --// NUMBERS ==================
             Def.BitmapText{
                 Font = Fonts.radar["Number"];
-                InitCommand=cmd(zoomx,0.425;zoomy,0;halign,0.5;valign,0.5;maxwidth,72;diffusealpha,0);
-                OnCommand=cmd(playcommand,"StateChanged");
+                InitCommand=function (self)
+                    self:zoomx(0.425):zoomy(0):halign(0.5):valign(0.5):maxwidth(72):diffusealpha(0);
+                end;
+
+                OnCommand=function (self)
+                    self:playcommand("StateChanged");
+                end;
+
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
                     self:decelerate(0.15);
@@ -262,7 +331,10 @@ local score_pos = originY + 42;
 
 -- personal
 local hs_p = Def.ActorFrame{
-    InitCommand=cmd(x,_screen.cx - 12;y,score_pos;diffusealpha,0);
+    InitCommand=function (self)
+        self:x(_screen.cx - 12):y(score_pos):diffusealpha(0);
+    end;
+
     StateChangedMessageCommand=function(self)
         self:stoptweening();
         self:decelerate(Global.state == "SelectSteps" and 0.3 or 0.15);
@@ -271,17 +343,28 @@ local hs_p = Def.ActorFrame{
     end;
 
     LoadActor(THEME:GetPathG("","litepane"))..{
-        InitCommand=cmd(zoomto,score_width,score_height*self:GetHeight();animate,false;setstate,1)
+        InitCommand=function (self)
+            self:zoomto(score_width,score_height*self:GetHeight()):animate(false):setstate(1);
+        end;
     },
     LoadActor(THEME:GetPathG("","litepane"))..{
-        InitCommand=cmd(zoom,score_height;x,-score_width/2;horizalign,right;animate,false;setstate,0);
-    },   
+        InitCommand=function (self)
+            self:zoom(score_height):x(-score_width/2):horizalign(right):animate(false):setstate(0);
+        end;
+    },
     LoadActor(THEME:GetPathG("","litepane"))..{
-        InitCommand=cmd(zoom,score_height;x,score_width/2;horizalign,left;animate,false;setstate,2);
+        InitCommand=function (self)
+            self:zoom(score_height):x(score_width/2):horizalign(left):animate(false):setstate(2);
+        end;
     },
     LoadActor(THEME:GetPathG("","separator"))..{
-        InitCommand=cmd(zoom,0.3;diffuse,0.1,0.1,0.1,1);
-        OnCommand=cmd(visible,GAMESTATE:GetNumSidesJoined() > 1);
+        InitCommand=function (self)
+            self:zoom(0.3):diffuse(0.1,0.1,0.1,1);
+        end;
+
+        OnCommand=function (self)
+            self:visible(GAMESTATE:GetNumSidesJoined() > 1);
+        end;
     },
     Def.BitmapText{
         Font = Fonts.radar["Label"];

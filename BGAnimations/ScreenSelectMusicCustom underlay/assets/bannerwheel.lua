@@ -129,7 +129,10 @@ end;
 --//================================================================
 
 local t = Def.ActorFrame{
-		InitCommand=cmd(fov,60*((SCREEN_WIDTH/SCREEN_HEIGHT)/(4/3)*0.9333);vanishpoint,originX,originY-74);
+		InitCommand=function (self)
+			self:fov(60*((SCREEN_WIDTH/SCREEN_HEIGHT)/(4/3)*0.9333)):vanishpoint(originX,originY-74);
+		end;
+
 		BuildMusicListMessageCommand=function(self)
 			offset = Global.selection;
 
@@ -215,7 +218,10 @@ for i=1,maxitems do
 
 		t[#t+1] = Def.ActorFrame{
 			Name = "Item"..tostring(i);
-			InitCommand=cmd(vertalign,bottom;x,selfcoords[i];y,originY-3;visible,false);
+			InitCommand=function (self)
+				self:vertalign(bottom):x(selfcoords[i]):y(originY-3):visible(false);
+			end;
+
 			BuildMusicListMessageCommand=function(self,param) 
 				self:stoptweening();
 				self:x(coords[i]);
@@ -235,7 +241,10 @@ for i=1,maxitems do
 				end;
 			end;
 
-            StateChangedMessageCommand=cmd(queuecommand,"Tween");
+            StateChangedMessageCommand=function (self)
+				self:queuecommand("Tween");
+			end;
+
 			TweenMessageCommand=function(self,param)
 				self:stoptweening();
 				if i ~= minIndex and i ~= maxIndex and not param.silent then
@@ -265,18 +274,30 @@ for i=1,maxitems do
 			        self:Create();
 			    end;
 
-			    OnCommand=cmd(y,999);
+			    OnCommand=function (self)
+					self:y(999);
+				end;
 
 					Def.ActorProxy{
 						Name = "BannerProxy"..i;
-						InitCommand=cmd(x,62;y,7);
-						OnCommand=cmd(SetTarget,self:GetParent():GetParent():GetChild("Banner"..i);zoomy,-1);
+						InitCommand=function (self)
+							self:x(62):y(7);
+						end;
+
+						OnCommand=function (self)
+							self:SetTarget(self:GetParent():GetParent():GetChild("Banner"..i)):zoomy(-1);
+						end;
 					};
 
 					Def.ActorProxy{
 						Name = "FrameProxy"..i;
-						InitCommand=cmd(x,62;y,7);
-						OnCommand=cmd(SetTarget,self:GetParent():GetParent():GetChild("Frame"..i);zoomy,-1);
+						InitCommand=function (self)
+							self:x(62):y(7);
+						end;
+
+						OnCommand=function (self)
+							self:SetTarget(self:GetParent():GetParent():GetChild("Frame"..i)):zoomy(-1);
+						end;
 					};
 
 			};
@@ -303,9 +324,11 @@ for i=1,maxitems do
 
 			Def.Banner{
 				Name = "Banner"..i;
-				InitCommand=cmd(y,-34);
+				InitCommand=function (self)
+					self:y(-34);
+				end;
+
 				TweenMessageCommand=function(self,param)
-					
 					self:stoptweening();
 					AdjustBanner(self);
 
@@ -315,9 +338,9 @@ for i=1,maxitems do
 
 					if Global.state ~= "MusicWheel" then 
 						self:diffuse(0.5,0.5,0.5,1); 
-					else 
+					else
 						self:diffuse(1,1,1,1);
-					end; 
+					end;
 
 				end;
 
@@ -360,22 +383,31 @@ for i=1,maxitems do
 
 			LoadActor(THEME:GetPathG("","WheelItemFrame"))..{
 				Name = "Frame"..i;
-				InitCommand=cmd(zoomto,124,80;vertalign,bottom;y,7);
-				BuildMusicListMessageCommand=cmd(playcommand,"Tween");
-				StateChangedMessageCommand=cmd(playcommand,"Tween");
+				InitCommand=function (self)
+					self:zoomto(124,80):vertalign(bottom):y(7);
+				end;
+
+				BuildMusicListMessageCommand=function (self)
+					self:playcommand("Tween");
+				end;
+
+				StateChangedMessageCommand=function (self)
+					self:playcommand("Tween");
+				end;
+
 				TweenMessageCommand=function(self,param)
 		
-					self:stoptweening();		
+					self:stoptweening();
 
 					if i ~= minIndex and i ~= maxIndex then
 						self:decelerate(tweenSpeed);
 					end
 
-					if Global.state~="MusicWheel" then 
-						self:diffuse(0.5,0.5,0.5,1); 
-					else 
+					if Global.state~="MusicWheel" then
+						self:diffuse(0.5,0.5,0.5,1);
+					else
 						self:diffuse(1,1,1,1);
-					end; 
+					end;
 
 				end;
 			};
@@ -386,7 +418,10 @@ end;
 
 -- cover
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(Center;croptop,0.475;fadetop,0.275;diffuse,Global.bgcolor;diffusealpha,0);
+	InitCommand=function (self)
+		self:Center():croptop(0.475):fadetop(0.275):diffuse(Global.bgcolor):diffusealpha(0)
+	end;
+	
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);

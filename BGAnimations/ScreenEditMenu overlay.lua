@@ -5,10 +5,10 @@ local steps_type_item_space= _screen.h*.06
 local steps_display= setmetatable({disable_wrapping= true}, item_scroller_mt)
 local function steps_transform(self, item_index, num_items)
 	self.container:xy((item_index-.5) * steps_item_space, 15)
-end
+end;
 local function stype_transform(self, item_index, num_items)
 	self.container:y((item_index-1) * steps_type_item_space)
-end
+end;
 local stype_item_mt= edit_pick_menu_steps_display_item(
 	stype_transform, Def.BitmapText{
 		Font = Fonts.edit["Steps"], InitCommand= function(self)

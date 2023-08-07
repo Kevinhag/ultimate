@@ -38,7 +38,7 @@ end;
 
 function JudgmentGrade()
     return {
-        { Label = JudgmentLabels()[1].Value,       Key = "W1",        Color = JudgmentColor("Flawless"),    Enabled = THEMECONFIG:get_data().AllowW1 },
+        -- { Label = JudgmentLabels()[1].Value,       Key = "W1",        Color = JudgmentColor("Flawless"),    Enabled = THEMECONFIG:get_data().AllowW1 },
         { Label = JudgmentLabels()[2].Value,       Key = "W2",        Color = JudgmentColor("Perfect"),     Enabled = true },
         { Label = JudgmentLabels()[3].Value,       Key = "W3",        Color = JudgmentColor("Great"),       Enabled = true },
         { Label = JudgmentLabels()[4].Value,       Key = "W4",        Color = JudgmentColor("Good"),        Enabled = true },

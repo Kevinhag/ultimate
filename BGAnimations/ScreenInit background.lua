@@ -13,13 +13,24 @@ local insults = {
 }
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_white"))..{
-    OffCommand=cmd(linear,0.5;diffusealpha,0;sleep,0.5);
+    OffCommand=function(self)
+        self:linear(0.5):diffusealpha(0):sleep(0.5);
+    end;
 }
 
 t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(Center;diffusealpha,0;addy,-32);
-    OnCommand=cmd(sleep,0.25;linear,0.5;diffusealpha,1;sleep,4.5;queuecommand,"Fadeout");
-    FadeoutCommand=function() SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut"); end;
+    InitCommand=function(self)
+        self:Center():diffusealpha(0):addy(-32);
+    end;
+
+    OnCommand=function (self)
+        self:sleep(0.25):linear(0.5):diffusealpha(1):sleep(4.5):queuecommand("Fadeout");
+    end;
+
+    FadeoutCommand=function()
+        SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
+    end;
+
     OffCommand=function(self)
         self:linear(0.5);
         self:diffusealpha(0);
@@ -27,34 +38,39 @@ t[#t+1] = Def.ActorFrame{
         self:queuecommand("Exit");
     end;
 
-    ExitCommand=function() 
-        SCREENMAN:SetNewScreen(ToTitleMenu()); 
+    ExitCommand=function()
+        SCREENMAN:SetNewScreen(ToTitleMenu());
     end;
 
-
-
     LoadActor(THEME:GetPathG("","ssc_logo"))..{
-        InitCommand=cmd(zoom,0.5;y,-24);
+        InitCommand=function(self)
+            self:zoom(0.5):y(-24);
+        end;
 
     },
 
     LoadActor(THEME:GetPathG("","ssc_text"))..{
-        InitCommand=cmd(zoom,0.75;y,64);
+        InitCommand=function(self)
+            self:zoom(0.75):y(64);
+        end;
     },
 
     Def.BitmapText{
         Font = "regen strong";
         Text = string.upper("Stepmania Ultimate, by Luizsan");
-        InitCommand=cmd(zoomx,0.475;zoomy,0.46;y,90;diffuse,0,0,0,0.4);
+        InitCommand=function(self)
+            self:zoomx(0.475):zoomy(0.46):y(90):diffuse(0,0,0,0.4);
+        end;
     },
 
     Def.BitmapText{
         Font = "titillium regular";
-        InitCommand=cmd(zoom,0.5;y,120;vertalign,top;diffuse,0,0,0,0.3;wrapwidthpixels,400/self:GetZoom();vertspacing,-10);
+        InitCommand=function(self)
+            self:zoom(0.5):y(120):vertalign(top):diffuse(0,0,0,0.3):wrapwidthpixels(400/self:GetZoom()):vertspacing(-10);
+        end;
         Text = "Hello lamer fucker, this is Luizsan. Here's the deal. If you turn this theme into one more official Pump It Up bootleg theme, I will find you wherever you are and "..insults[math.random(1,#insults)]..".\nAnd that's a promise.";
     },
 
 };
-
 
 return t

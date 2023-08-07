@@ -402,13 +402,42 @@ local scroller_actor = Def.ActorFrame{
 
 }
 
-local scroller_item = OptionScrollerItem(16,scroller_actor);
-t[#t+1] = scroller:create_actors("OptionsMenu", maxitems, scroller_item, 0, 0);
+-- local scroller_item = OptionScrollerItem(16,scroller_actor);
+-- t[#t+1] = scroller:create_actors("OptionsMenu", maxitems, scroller_item, 0, 0);
 
 
--- QUADS BG
+-- QUADS BG-----------------------------------------
+
+-- local bg = Def.ActorFrame{
+--     InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+--     StateChangedMessageCommand=function(self)
+--         self:stoptweening();
+--         self:decelerate(0.2);
+--         self:diffusealpha(Global.state == "OptionsMenu" and 1 or 0);
+--     end;
+
+--     Def.Quad{
+--         InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;cropbottom,1/3;
+--             diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0.5),0.5);fadeleft,0.25;faderight,0.25);
+--     },
+
+--     Def.Quad{
+--         InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;diffuse,0.2,0.2,0.2,0.75;cropbottom,1/3;fadeleft,0.25;faderight,0.25);
+--     },
+
+--     LoadActor(THEME:GetPathG("","_pattern"))..{
+--         InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;blend,Blend.Add;
+--             diffuse,BoostColor(HighlightColor(),0.125);diffusebottomedge,0.1,0.1,0.1,0.25;cropbottom,1/3;fadeleft,0.25;faderight,0.25;
+--                 customtexturerect,0,0,(_screen.h*(16/9)) / 384 * 2.5 *(2/3),_screen.h / 384 * 2.5;texcoordvelocity,0,-0.075);
+--     },
+-- };
+
 local bg = Def.ActorFrame{
-    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+    InitCommand=function(self)
+        self:CenterX();
+        self:y(SCREEN_CENTER_Y-10.5);
+        self:diffusealpha(0);
+    end;
     StateChangedMessageCommand=function(self)
         self:stoptweening();
         self:decelerate(0.2);
@@ -416,22 +445,40 @@ local bg = Def.ActorFrame{
     end;
 
     Def.Quad{
-        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;cropbottom,1/3;
-            diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0.5),0.5);fadeleft,0.25;faderight,0.25);
+        InitCommand=function(self)
+            self:zoomto(_screen.h*(16/9)*(2/3),_screen.h);
+            self:cropbottom(1/3);
+            self:diffuse(BoostColor(Global.bgcolor,0.5));
+            self:diffusebottomedge(BoostColor(AlphaColor(Global.bgcolor,0.5),0.5));
+            self:fadeleft(0.25);
+            self:faderight(0.25);
+        end;
     },
 
     Def.Quad{
-        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;diffuse,0.2,0.2,0.2,0.75;cropbottom,1/3;fadeleft,0.25;faderight,0.25);
+        InitCommand=function(self)
+            self:zoomto(_screen.h*(16/9)*(2/3),_screen.h);
+            self:diffuse(0.2,0.2,0.2,0.75);
+            self:cropbottom(1/3);
+            self:fadeleft(0.25);
+            self:faderight(0.25);
+        end;
     },
 
     LoadActor(THEME:GetPathG("","_pattern"))..{
-        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;blend,Blend.Add;
-            diffuse,BoostColor(HighlightColor(),0.125);diffusebottomedge,0.1,0.1,0.1,0.25;cropbottom,1/3;fadeleft,0.25;faderight,0.25;
-                customtexturerect,0,0,(_screen.h*(16/9)) / 384 * 2.5 *(2/3),_screen.h / 384 * 2.5;texcoordvelocity,0,-0.075);
+        InitCommand=function(self)
+            self:zoomto(_screen.h*(16/9)*(2/3),_screen.h);
+            self:blend(Blend.Add);
+            self:diffuse(BoostColor(HighlightColor(),0.125));
+            self:diffusebottomedge(0.1,0.1,0.1,0.25);
+            self:cropbottom(1/3);
+            self:fadeleft(0.25);
+            self:faderight(0.25);
+            self:customtexturerect(0,0,(_screen.h*(16/9)) / 384 * 2.5 *(2/3),_screen.h / 384 * 2.5);
+            self:texcoordvelocity(0,-0.075);
+        end;
     },
 };
-
-
 
 
 return Def.ActorFrame{ bg, t };

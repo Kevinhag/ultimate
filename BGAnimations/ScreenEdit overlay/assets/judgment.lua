@@ -93,7 +93,9 @@ end;
 
 t[#t+1] = Def.BitmapText{
 	Font = Fonts.editor["Main"];
-	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.6;x,SCREEN_LEFT+8;y,SCREEN_TOP+8;horizalign,left;vertalign,top;zoom,0.575);
+	InitCommand=function (self)
+		self:diffuse(1,1,1,1):strokecolor(0.1,0.1,0.1,1):zoom(0.6):x(SCREEN_LEFT+8):y(SCREEN_TOP+8):horizalign(left):vertalign(top):zoom(0.575);
+	end;
 	UpdateMessageCommand=function(self)
 		if SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_Gameplay" then
 			self:visible(true);
@@ -130,16 +132,16 @@ t[#t+1] = Def.BitmapText{
 			notecount = notecount - 1; 
 			all_dp = all_dp + HNS_weights["HoldNoteScore_Held"];
 			cur_dp = cur_dp + HNS_weights[param.HoldNoteScore];
-		end;	
+		end;
 
 		self:settext("Notes judged: "..notecount);
 
 		local comboparams = { 
 			Combo = ValueOrNil(hits),
 			Misses = ValueOrNil(misses),
-			Player = GAMESTATE:GetMasterPlayerNumber(), 
-			currentDP = cur_dp, 
-			possibleDP = all_dp 
+			Player = GAMESTATE:GetMasterPlayerNumber(),
+			currentDP = cur_dp,
+			possibleDP = all_dp
 		};
 
 		local comboActor = SCREENMAN:GetTopScreen():GetChild("Player"):GetChild("Combo");

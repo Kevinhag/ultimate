@@ -1,3 +1,5 @@
 return LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(Center;diffuse,Global.bgcolor);
+	InitCommand=function (self)
+		self:Center():diffuse(Global.bgcolor);
+	end;
 };

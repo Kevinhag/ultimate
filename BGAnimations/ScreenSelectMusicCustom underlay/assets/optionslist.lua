@@ -20,7 +20,7 @@ local selection_stack = {
 };
 
 
-ResetPlayerDisplay(pn);
+-- ResetPlayerDisplay(pn);
 
 local function NoteskinMenu(pn)
     local noteskins = GetNoteskins();
@@ -303,20 +303,46 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             Def.BitmapText{
                 Name = "Name";
                 Font = Fonts.options["Main"];
-                InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);zoom,fontsize;skewx,-0.12;textglowmode,"TextGlowMode_Inner";playcommand,"LoseFocus");
-                GainFocusCommand=cmd(stoptweening;glowshift;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn),1.2);strokecolor,BoostColor(PlayerColor(pn),0.45);effectperiod,0.25);
-                LoseFocusCommand=cmd(stoptweening;stopeffect;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn),1.0);strokecolor,BoostColor(PlayerColor(pn),0.4));
-                DisabledCommand=cmd(stoptweening;stopeffect;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn,0.5),1.0);strokecolor,BoostColor(PlayerColor(pn,0.5),0.4));
-                OptionsListClosedMessageCommand=function(self,param) if param and param.Player == pn then self:stopeffect() end; end;
+                InitCommand=function (self)
+                    self:horizalign(pnAlign(OtherPlayer[pn])):zoom(fontsize):skewx(-0.12):textglowmode("TextGlowMode_Inner"):playcommand("LoseFocus");
+                end;
+
+                GainFocusCommand=function (self)
+                    self:stoptweening():glowshift():decelerate(0.15):diffuse(BoostColor(PlayerColor(pn),1.2)):strokecolor(BoostColor(PlayerColor(pn),0.45)):effectperiod(0.25);
+                end;
+
+                LoseFocusCommand=function (self)
+                    self:stoptweening():stopeffect():decelerate(0.15):diffuse(BoostColor(PlayerColor(pn),1.0)):strokecolor(BoostColor(PlayerColor(pn),0.4));
+                end;
+
+                DisabledCommand=function (self)
+                    self:stoptweening():stopeffect():decelerate(0.15):diffuse(BoostColor(PlayerColor(pn,0.5),1.0)):strokecolor(BoostColor(PlayerColor(pn,0.5),0.4));
+                end;
+                OptionsListClosedMessageCommand=function(self,param)
+                    if param and param.Player == pn then
+                        self:stopeffect()
+                    end;
+                end;
             },
             -- value
             Def.BitmapText{
                 Name = "Value";
                 Font = Fonts.options["Main"];
-                InitCommand=cmd(x,10*-pnSide(pn);horizalign,pnAlign(pn);zoom,fontsize*0.95;playcommand,"LoseFocus");
-                GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,0.85,0.4,1;strokecolor,BoostColor({1,0.85,0.4,1},0.4));
-                LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.25,0.25,0.25,0.8);
-                DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.5);
+                InitCommand=function (self)
+                    self:x(10*-pnSide(pn)):horizalign(pnAlign(pn)):zoom(fontsize*0.95):playcommand("LoseFocus");
+                end;
+
+                GainFocusCommand=function (self)
+                    self:stoptweening():decelerate(0.15):diffuse(1,0.85,0.4,1):strokecolor(BoostColor({1,0.85,0.4,1},0.4));
+                end;
+
+                LoseFocusCommand=function (self)
+                    self:stoptweening():decelerate(0.15):diffuse(1,1,1,1):strokecolor(0.25,0.25,0.25,0.8);
+                end;
+
+                DisabledCommand=function (self)
+                    self:stoptweening():decelerate(0.15):diffuse(0.6,0.6,0.6,0.5):strokecolor(0.2,0.2,0.2,0.5);
+                end;
                 OptionsListClosedMessageCommand=function(self,param) if param and param.Player == pn then self:stopeffect() end; end;
             },  
         }
@@ -331,14 +357,36 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             self.prev_index = item_index;
         end;
 
-
         t[#t+1] = Def.ActorFrame{
-            InitCommand=cmd(diffusealpha,0);
-            OptionsListOpenedMessageCommand=function(self,param) if param.Player == pn then self:stoptweening():decelerate(0.4):diffusealpha(1); ResetOptionStack(pn); end; end;
-            OptionsListClosedMessageCommand=function(self,param) if param.Player == pn then self:stoptweening():decelerate(0.3):diffusealpha(0); end; end;
-            OptionsListSelectedMessageCommand=function(self,param) self:playcommand("Refresh", param) end;
-            OptionsListChangedMessageCommand=function(self,param) self:playcommand("Refresh", param) end;
-            ReturnMessageCommand=function(self,param) self:playcommand("Refresh", param) end;
+            InitCommand=function (self)
+                self:diffusealpha(0);
+            end;
+
+            OptionsListOpenedMessageCommand=function(self,param)
+                if param.Player == pn then 
+                    self:stoptweening():decelerate(0.4):diffusealpha(1); 
+                    ResetOptionStack(pn); 
+                end; 
+            end;
+
+            OptionsListClosedMessageCommand=function(self,param) 
+                if param.Player == pn then 
+                    self:stoptweening():decelerate(0.3):diffusealpha(0); 
+                end; 
+            end;
+
+            OptionsListSelectedMessageCommand=function(self,param)
+                self:playcommand("Refresh", param)
+            end;
+
+            OptionsListChangedMessageCommand=function(self,param) 
+                self:playcommand("Refresh", param)
+            end;
+
+            ReturnMessageCommand=function(self,param) 
+                self:playcommand("Refresh", param) 
+            end;
+
             RefreshCommand=function(self,param)
                 if param and param.Player == pn then
                     local pn = param.Player;
@@ -352,35 +400,53 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             Def.ActorFrame{
 
                 Def.Quad{
-                    InitCommand=cmd(Center;skewx,-0.075;zoomto,_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h;halign,1.2;
-                        diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0),0.5);cropbottom,1/3;faderight,0.75);
+                    InitCommand=function (self)
+                        self:Center():skewx(-0.075):zoomto(_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h):halign(1.2):diffuse(BoostColor(Global.bgcolor,0.5)):diffusebottomedge(BoostColor(AlphaColor(Global.bgcolor,0),0.5)):cropbottom(1/3):faderight(0.75);
+                    end;
                 },
                 Def.Quad{
-                    InitCommand=cmd(Center;skewx,-0.075;zoomto,_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h;halign,1.2;
-                        diffuse,BoostColor(PlayerColor(pn,1),0.5);diffusebottomedge,PlayerColor(pn,0);cropbottom,1/3;faderight,0.75);
+                    InitCommand=function (self)
+                        self:Center():skewx(-0.075):zoomto(_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h):halign(1.2):diffuse(BoostColor(PlayerColor(pn,1),0.5)):diffusebottomedge(PlayerColor(pn,0)):cropbottom(1/3):faderight(0.75);
+                    end;
                 },
                 LoadActor(THEME:GetPathG("","_pattern"))..{
-                    InitCommand=cmd(Center;skewx,-0.075;zoomto,_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h;halign,1.2;
-                        diffuse,BoostColor(PlayerColor(pn,0.2),0.5);diffusebottomedge,PlayerColor(pn,0);cropbottom,1/3;
-                            customtexturerect,0,0,(_screen.h*(16/9)) / 384 * 2 *0.45,_screen.h / 384 * 2;texcoordvelocity,-0.125,-0.075;faderight,0.75;blend,Blend.Add);
+                    InitCommand=function (self)
+                        self:Center():skewx(-0.075):zoomto(_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h):halign(1.2):diffuse(BoostColor(PlayerColor(pn,0.2),0.5)):diffusebottomedge(PlayerColor(pn,0)):cropbottom(1/3):customtexturerect(0,0,(_screen.h*(16/9)) / 384 * 2 *0.45,_screen.h / 384 * 2):texcoordvelocity(-0.125,-0.075):faderight(0.75):blend(Blend.Add);
+                    end;
                 },
             },
 
             Def.Quad{
-                InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-140;zoomto,_screen.w * 0.5 * pnSide(pn),1;horizalign,left;fadeleft,0.75;cropleft,0.15;diffuse,PlayerColor(pn));
+                InitCommand=function (self)
+                    self:CenterX():y(SCREEN_CENTER_Y-140):zoomto(_screen.w * 0.5 * pnSide(pn),1):horizalign(left):fadeleft(0.75):cropleft(0.15):diffuse(PlayerColor(pn));
+                end;
             },
 
             -- TEXT
             Def.ActorFrame{
-                InitCommand=cmd(x,SCREEN_CENTER_X + (pnSide(pn)*(spacing+32));y,SCREEN_CENTER_Y-140);
-                OptionsListOpenedMessageCommand=function(self,param) if param.Player == pn then self:stoptweening():decelerate(0.4):x(SCREEN_CENTER_X + (pnSide(pn)*(spacing-8))); end; end;
-                OptionsListClosedMessageCommand=function(self,param) if param.Player == pn then self:stoptweening():decelerate(0.3):x(SCREEN_CENTER_X + (pnSide(pn)*(spacing+8))); end; end;
+                InitCommand=function (self)
+                    self:x(SCREEN_CENTER_X + (pnSide(pn)*(spacing+32))):y(SCREEN_CENTER_Y-140);
+                end;
+                OptionsListOpenedMessageCommand=function(self,param) 
+                    if param.Player == pn then
+                        self:stoptweening():decelerate(0.4):x(SCREEN_CENTER_X + (pnSide(pn)*(spacing-8)));
+                    end;
+                end;
+
+                OptionsListClosedMessageCommand=function(self,param) 
+                    if param.Player == pn then
+                        self:stoptweening():decelerate(0.3):x(SCREEN_CENTER_X + (pnSide(pn)*(spacing+8)));
+                    end;
+                end;
 
                 -- title
                 Def.BitmapText{
                     Font = "regen strong";
                     Text = string.upper("Player  Options");
-                    InitCommand=cmd(x,4*-pnSide(pn);zoomy,0.31;zoomx,0.3075;horizalign,pnAlign(OtherPlayer[pn]);strokecolor,BoostColor(PlayerColor(pn,0.9),1/3);diffusealpha,0);
+                    InitCommand=function (self)
+                        self:x(4*-pnSide(pn)):zoomy(0.31):zoomx(0.3075):horizalign(pnAlign(OtherPlayer[pn])):strokecolor(BoostColor(PlayerColor(pn,0.9),1/3)):diffusealpha(0);
+                    end;
+
                     OptionsListOpenedMessageCommand=function(self,param)
                         if param and param.Player == pn then
                             self:stoptweening();
@@ -388,6 +454,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                             self:diffusealpha(0.75);
                         end;
                     end;
+
                     OptionsListClosedMessageCommand=function(self,param)
                         if param and param.Player == pn then
                             self:stoptweening();
@@ -398,16 +465,16 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 },
 
                 -- main scroller
-                scroller:create_actors("OptionsList", maxitems, scroller_item, 0, 0)..{
-                    InitCommand=cmd(y,4;x,16*pnSide(pn);diffusealpha,0);
-                    OptionsListOpenedMessageCommand=function(self,param)
-                        if param and param.Player == pn then
-                            self:stoptweening();
-                            self:decelerate(0.3);
-                            self:diffusealpha(1);
-                            self:x(0);
-                        end;
-                    end;
+                -- scroller:create_actors("OptionsList", maxitems, scroller_item, 0, 0)..{
+                --     InitCommand=cmd(y,4;x,16*pnSide(pn);diffusealpha,0);
+                --     OptionsListOpenedMessageCommand=function(self,param)
+                --         if param and param.Player == pn then
+                --             self:stoptweening();
+                --             self:decelerate(0.3);
+                --             self:diffusealpha(1);
+                --             self:x(0);
+                --         end;
+                --     end;
 
                     OptionsListClosedMessageCommand=function(self,param)
                         if param and param.Player == pn then
@@ -421,7 +488,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 },
             }
 
-        }
+        
 
     end;
 end;

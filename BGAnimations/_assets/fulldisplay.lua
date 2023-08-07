@@ -7,7 +7,9 @@ local adjust = 0;
 
 t[#t+1] = Def.Sprite{
 
-	InitCommand=cmd(Center;diffusealpha,0;valign,0);
+	InitCommand=function (self)
+		self:Center():diffusealpha(0):valign(0);
+	end;
 
 	OnCommand=function(self)
 		self:sleep(0.2);
@@ -18,7 +20,9 @@ t[#t+1] = Def.Sprite{
 		end;
 	end;
 
-	OffCommand=cmd(stoptweening;linear,0.5;diffuse,1,1,1,0);
+	OffCommand=function (self)
+		self:stoptweening():linear(0.5):diffuse(1,1,1,0);
+	end;
 
 	MusicWheelMessageCommand=function(self)
 		self:stoptweening();
@@ -54,7 +58,10 @@ t[#t+1] = Def.Sprite{
         MESSAGEMAN:Broadcast("UpdateOverlay");
     end;
 	
-	UnloadMessageCommand=cmd(Load,nil);
+	UnloadMessageCommand=function (self)
+		self:Load(nil);
+	end;
+
 	LoadCommand=function(self)
 
 		LoadBackground(self,Global.song);
@@ -80,7 +87,10 @@ t[#t+1] = Def.Sprite{
 };
 
 t[#t+1] = LoadActor(THEME:GetPathG("","overlay"))..{
-	InitCommand=cmd(valign,0;diffuse,Global.bgcolor;visible,false);
+	InitCommand=function (self)
+		self:valign(0):diffuse(Global.bgcolor):visible(false);
+	end;
+
 	UpdateOverlayMessageCommand=function(self)
 		self:visible(true);
 		self:stretchto(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -91,12 +101,16 @@ t[#t+1] = LoadActor(THEME:GetPathG("","overlay"))..{
 
 -- layer 1
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(FullScreen;diffuse,Global.bgcolor;diffusealpha,0.8;fadetop,0.8);
+	InitCommand=function (self)
+		self:FullScreen():diffuse(Global.bgcolor):diffusealpha(0.8):fadetop(0.8);
+	end;
 };
 
 -- layer 2
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(FullScreen;diffuse,Global.bgcolor;diffusealpha,0);
+	InitCommand=function (self)
+		self:FullScreen():diffuse(Global.bgcolor):diffusealpha(0);
+	end;
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
